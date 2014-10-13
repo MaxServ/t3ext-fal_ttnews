@@ -1,0 +1,6 @@
+plugin.tt_news.newsFiles {
+    labelStdWrap.cObject = TEXT
+    labelStdWrap.cObject.field = title
+}
+
+plugin.fal_ttnews.mode =  {$plugin.fal_ttnews.mode}
