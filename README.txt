@@ -1,2 +1,2 @@
-
-Feel free to add some documentation or simply add a link to the online manual.
+Based on dam_ttnews.
+Adds FAL to tt_news.
