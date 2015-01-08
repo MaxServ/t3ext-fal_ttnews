@@ -1,5 +1,4 @@
-# cat=basic/enable; type=boolean; label=FAL Media Field: Enable FAL reference fields in News object.
+  # cat=basic/enable; type=boolean; label=FAL Media Field: Enable FAL reference fields in News object.
 media_add_ref = 1
-
-# cat=basic/enable; type=boolean; label=Original Media Fields: Display original media fields in News object.
+  # cat=basic/enable; type=boolean; label=Original Media Fields: Display original media fields in News object.
 media_add_orig_field = 0
