@@ -2,7 +2,7 @@
 
 $GLOBALS['T3_VAR']['ext']['fal_ttnews']['setup'] = unserialize($_EXTCONF);
 
-t3lib_extMgm::addTypoScript($_EXTKEY, 'setup', '
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScript($_EXTKEY, 'setup', '
 
 includeLibs.imageMarkerFunc=EXT:fal_ttnews/imageMarkerFunc.php
 plugin.tt_news.imageMarkerFunc = user_imageMarkerFunc

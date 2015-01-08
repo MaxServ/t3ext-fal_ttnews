@@ -42,7 +42,7 @@ function user_displayFileLinks($markerArray, $conf) {
     //Important: unset path
     $conf_newsFiles['path'] = '';
 
-    $local_cObj = t3lib_div::makeInstance('tslib_cObj');
+    $local_cObj = GeneralUtility::makeInstance('tslib_cObj');
 
     //workspaces
     if (isset($row['_ORIG_uid']) && ($row['_ORIG_uid'] > 0)) {
@@ -54,11 +54,11 @@ function user_displayFileLinks($markerArray, $conf) {
     }
     // Check for translation ?
 
-    $fileRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\FileRepository');
+    $fileRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\FileRepository');
     $fileObjects = $fileRepository->findByRelation('tt_news', 'tx_falttnews_fal_media', $uid);
 
     if (is_array($fileObjects)) {
-        $files_stdWrap = t3lib_div::trimExplode('|', $pObj->conf['newsFiles_stdWrap.']['wrap']);
+        $files_stdWrap = GeneralUtility::trimExplode('|', $pObj->conf['newsFiles_stdWrap.']['wrap']);
         $filelinks = '';
         foreach ($fileObjects as $key => $file) {
             $local_cObj->start($file->getOriginalFile()->getProperties());
