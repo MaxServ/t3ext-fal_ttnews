@@ -27,7 +27,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * FAL Support
  * See more here: http://wiki.typo3.org/File_Abstraction_Layer
  *
- * @param    array $markerArray : array filled with markers from the getItemMarkerArray function in tt_news class. see: EXT:tt_news/pi/class.tx_ttnews.php
+ * @param    array $markerArray : array filled with markers from the
+ *    getItemMarkerArray function in tt_news class. see:
+ *    EXT:tt_news/pi/class.tx_ttnews.php
  * @param    [type]        $conf: ...
  * @return    array        the changed markerArray
  */
@@ -54,14 +56,30 @@ function user_displayFileLinks($markerArray, $conf) {
     }
     // Check for translation ?
 
+	/** @var TYPO3\CMS\Core\Resource\FileRepository $fileRepository */
     $fileRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\FileRepository');
     $fileObjects = $fileRepository->findByRelation('tt_news', 'tx_falttnews_fal_media', $uid);
 
     if (is_array($fileObjects)) {
         $files_stdWrap = GeneralUtility::trimExplode('|', $pObj->conf['newsFiles_stdWrap.']['wrap']);
         $filelinks = '';
-        foreach ($fileObjects as $key => $file) {
-            $local_cObj->start($file->getOriginalFile()->getProperties());
+	    /**
+	     * @var \TYPO3\CMS\Core\Resource\FileReference $file
+	     */
+	    foreach ($fileObjects as $key => $file) {
+		    $fileProperties = $file->getOriginalFile()->getProperties();
+		    $referenceProperties = $file->getReferenceProperties();
+		    foreach ($referenceProperties as $key => $value) {
+			    if (in_array($key, array(
+				    'title',
+				    'description',
+				    'downloadname',
+				    'alterative'
+			    ))) {
+				    $fileProperties['reference' . ucfirst($key)] = $value;
+			    }
+		    }
+            $local_cObj->start($fileProperties);
             $filelinks .= $local_cObj->filelink( $file->getPublicUrl(), $conf_newsFiles);
         }
 
