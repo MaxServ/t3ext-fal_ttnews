@@ -1,4 +1,4 @@
 plugin.fal_ttnews {
-  # cat=plugin.fal_ttnews/; type=integer; label= Image Captions, Alt-Text and Title-Tag: 0=Take from news record 1=If empty take from DAM 2=Take from FAL
+  # cat=plugin.fal_ttnews/; type=integer; label= Image Captions, Alt-Text and Title-Tag: 0=Take from news record 1=If empty take from DAM 2=Take from FAL 3=Take from FAL and use news record as fallback
   mode = 0
 }

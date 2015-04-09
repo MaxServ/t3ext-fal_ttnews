@@ -148,6 +148,24 @@ function user_imageMarkerFunc($paramArray, $conf) {
 					$lConf['image.']['titleText'] = $reference['title'];
 					$caption = $reference['description'];
 					break;
+				//take data from FAL fields and use tt_news as a fallback
+				case 3:
+					if ($reference['alternative']) {
+						$lConf['image.']['altText'] = $reference['alternative'];
+					} else {
+						$lConf['image.']['altText'] = $imgsAltTexts[$cc];
+					}
+					if ($reference['title']) {
+						$lConf['image.']['titleText'] = $reference['title'];
+					} else {
+						$lConf['image.']['titleText'] = $imgsTitleTexts[$cc];
+					}
+					if ($reference['description']) {
+						$caption = $reference['description'];
+					} else {
+						$caption = $imgsCaptions[$cc];
+					}
+					break;
 			}
 			$lConf['image.']['file'] = $val;
 		}
