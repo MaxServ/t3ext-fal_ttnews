@@ -1,6 +1,6 @@
 plugin.tt_news.newsFiles {
     labelStdWrap.cObject = TEXT
-    labelStdWrap.cObject.field = title
+    labelStdWrap.cObject.field = referenceTitle // referenceAlternative // title // alternative // readableName // description
 }
 
 plugin.fal_ttnews.mode =  {$plugin.fal_ttnews.mode}
