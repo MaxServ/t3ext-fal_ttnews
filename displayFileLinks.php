@@ -45,7 +45,7 @@ function user_displayFileLinks($markerArray, $conf) {
 	//Important: unset path
 	$conf_newsFiles['path'] = '';
 
-	$local_cObj = GeneralUtility::makeInstance('tslib_cObj');
+	$local_cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 
 	//workspaces
 	if (isset($row['_ORIG_uid']) && ($row['_ORIG_uid'] > 0)) {
