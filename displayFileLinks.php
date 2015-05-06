@@ -86,7 +86,7 @@ function user_displayFileLinks($markerArray, $conf) {
 			$fileProperties['readableName'] = str_replace(array('_'), array(' '), $fileNameParts['filename']);
 
 			$local_cObj->start($fileProperties);
-			$filelinks .= $local_cObj->filelink($file->getPublicUrl(), $conf_newsFiles);
+			$filelinks .= $local_cObj->filelink(rawurldecode($file->getPublicUrl()), $conf_newsFiles);
 		}
 
 		if ($filelinks) {
