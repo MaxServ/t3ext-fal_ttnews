@@ -115,7 +115,7 @@ function user_imageMarkerFunc($paramArray, $conf) {
 			break;
 		}
 		if ($val) {
-			$reference = $val->getReferenceProperties();
+			$reference = array_merge(array_filter($val->getOriginalFile()->getProperties(), 'strval'), array_filter($val->getReferenceProperties(), 'strval'));
 			//set Caption, Alt-text and Title Tag
 			switch ($mode) {
 				//take data form tt_news record
