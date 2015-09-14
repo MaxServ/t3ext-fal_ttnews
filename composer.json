@@ -1,0 +1,12 @@
+{
+    "name": "maxserv/fal_ttnews",
+    "type": "typo3-cms-extension",
+    "description": "FAL to tt_news connector",
+    "homepage": "https://github.com/MaxServ/t3ext-fal_ttnews",
+    "license": ["GPL-2.0+"],
+    "keywords": ["TYPO3 CMS", "fal", "ttnews", "tt_news", "fal_ttnews"],
+    "support": {
+        "issues": "https://github.com/MaxServ/t3ext-fal_ttnews/issues"
+    },
+    "version": "0.0.2"
+}
