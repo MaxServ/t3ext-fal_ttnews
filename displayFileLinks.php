@@ -27,73 +27,49 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * FAL Support
  * See more here: http://wiki.typo3.org/File_Abstraction_Layer
  *
- * @param    array $markerArray : array filled with markers from the
- *    getItemMarkerArray function in tt_news class. see:
- *    EXT:tt_news/pi/class.tx_ttnews.php
+ * @param    array $markerArray : array filled with markers from the getItemMarkerArray function in tt_news class. see: EXT:tt_news/pi/class.tx_ttnews.php
  * @param    [type]        $conf: ...
- *
  * @return    array        the changed markerArray
  */
 function user_displayFileLinks($markerArray, $conf) {
-	$pObj = &$conf['parentObj']; // make a reference to the parent-object
-	$row = $pObj->local_cObj->data;
-	$markerArray['###FILE_LINK###'] = '';
-	$markerArray['###TEXT_FILES###'] = '';
+    $pObj = &$conf['parentObj']; // make a reference to the parent-object
+    $row = $pObj->local_cObj->data;
+    $markerArray['###FILE_LINK###'] = '';
+    $markerArray['###TEXT_FILES###'] = '';
 
-	//load TS config for newsFiles from tt_news
-	$conf_newsFiles = $pObj->conf['newsFiles.'];
-	//Important: unset path
-	$conf_newsFiles['path'] = '';
+    //load TS config for newsFiles from tt_news
+    $conf_newsFiles = $pObj->conf['newsFiles.'];
+    //Important: unset path
+    $conf_newsFiles['path'] = '';
 
-	$local_cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+    $local_cObj = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer::class);
 
-	//workspaces
-	if (isset($row['_ORIG_uid']) && ($row['_ORIG_uid'] > 0)) {
-		// draft workspace
-		$uid = $row['_ORIG_uid'];
-	} else {
-		// live workspace
-		$uid = $row['uid'];
-	}
-	// Check for translation ?
+    //workspaces
+    if (isset($row['_ORIG_uid']) && ($row['_ORIG_uid'] > 0)) {
+        // draft workspace
+        $uid = $row['_ORIG_uid'];
+    } else {
+        // live workspace
+        $uid = $row['uid'];
+    }
+    // Check for translation ?
 
-	/** @var TYPO3\CMS\Core\Resource\FileRepository $fileRepository */
-	$fileRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\FileRepository');
-	$fileObjects = $fileRepository->findByRelation('tt_news', 'tx_falttnews_fal_media', $uid);
+    $fileRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\FileRepository');
+    $fileObjects = $fileRepository->findByRelation('tt_news', 'tx_falttnews_fal_media', $uid);
 
-	if (is_array($fileObjects)) {
-		$files_stdWrap = GeneralUtility::trimExplode('|', $pObj->conf['newsFiles_stdWrap.']['wrap']);
-		$filelinks = '';
-		/**
-		 * @var \TYPO3\CMS\Core\Resource\FileReference $file
-		 */
-		foreach ($fileObjects as $key => $file) {
-			$fileProperties = $file->getOriginalFile()->getProperties();
-			$referenceProperties = $file->getReferenceProperties();
-			foreach ($referenceProperties as $key => $value) {
-				if (in_array($key, array(
-					'title',
-					'description',
-					'downloadname',
-					'alterative'
-				))) {
-					$fileProperties['reference' . ucfirst($key)] = $value;
-				}
-			}
+    if (is_array($fileObjects)) {
+        $files_stdWrap = GeneralUtility::trimExplode('|', $pObj->conf['newsFiles_stdWrap.']['wrap']);
+        $filelinks = '';
+        foreach ($fileObjects as $key => $file) {
+            $local_cObj->start($file->getOriginalFile()->getProperties());
+            $filelinks .= $local_cObj->filelink( $file->getPublicUrl(), $conf_newsFiles);
+        }
 
-			// Create fallback title for file if no metadata was found
-			$fileNameParts = pathinfo($fileProperties['name']);
-			$fileProperties['readableName'] = str_replace(array('_'), array(' '), $fileNameParts['filename']);
-
-			$local_cObj->start($fileProperties);
-			$filelinks .= $local_cObj->filelink(rawurldecode($file->getPublicUrl()), $conf_newsFiles);
-		}
-
-		if ($filelinks) {
-			$markerArray['###FILE_LINK###'] = $filelinks . $files_stdWrap[1];
-			$markerArray['###TEXT_FILES###'] = $files_stdWrap[0] . $pObj->local_cObj->stdWrap($pObj->pi_getLL('textFiles'), $pObj->conf['newsFilesHeader_stdWrap.']);
-		}
-	}
-
-	return $markerArray;
+        if ($filelinks) {
+            $markerArray['###FILE_LINK###'] = $filelinks . $files_stdWrap[1];
+            $markerArray['###TEXT_FILES###'] = $files_stdWrap[0] . $pObj->local_cObj->stdWrap($pObj->pi_getLL('textFiles'), $pObj->conf['newsFilesHeader_stdWrap.']);
+        }
+    }
+    return $markerArray;
 }
+

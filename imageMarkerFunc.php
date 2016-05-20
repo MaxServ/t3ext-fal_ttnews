@@ -34,7 +34,6 @@
 function user_imageMarkerFunc($paramArray, $conf) {
 
 	$markerArray = $paramArray[0];
-	// return $markerArray;
 	$lConf = $paramArray[1];
 	$pObj = &$conf['parentObj']; // make a reference to the parent-object
 	$row = $pObj->local_cObj->data;
@@ -42,7 +41,6 @@ function user_imageMarkerFunc($paramArray, $conf) {
 	$mode = (int)$GLOBALS['TSFE']->tmpl->setup['plugin.']['fal_ttnews.']['mode'];
 
 	$imageNum = isset($lConf['imageCount']) ? $lConf['imageCount'] : 1;
-	// $imageNum = \TYPO3\CMS\Core\Utility\GeneralUtility::intInRange($imageNum, 0, 100);
 	$imageNum = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($imageNum, 0, 100);
 	$theImgCode = '';
 
@@ -79,18 +77,8 @@ function user_imageMarkerFunc($paramArray, $conf) {
 	$shift = FALSE;
 
 	// get FAL data
-	// $infoFields = tx_dam_db::getMetaInfoFieldList(true,array('alt_text'=>'alt_text','caption'=>'caption'));
-	// $damData = tx_dam_db::getReferencedFiles('tt_news', $uid, 'tx_damnews_dam_images','tx_dam_mm_ref',$infoFields);
 	$fileRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\FileRepository');
 	$fileObjects = $fileRepository->findByRelation('tt_news', 'tx_falttnews_fal_images', $uid);
-	// $damFiles = $damData['files'];
-	// $damRows = $damData['rows'];
-
-	// localisation of DAM data
-	// while (list($key, $val) = each($damRows)) {
-	// $damRows[$key] =  $GLOBALS['TSFE']->sys_page->getRecordOverlay('tx_dam', $val, $GLOBALS['TSFE']->sys_language_uid, '');
-	// }
-
 	// remove first img from the image array in single view if the TSvar firstImageIsPreview is set
 	if (((count($fileObjects) > 1 && $pObj->config['firstImageIsPreview']) || (count($fileObjects) >= 1 && $pObj->config['forceFirstImageIsPreview'])) && $pObj->theCode == 'SINGLE') {
 		array_shift($fileObjects);
@@ -105,7 +93,6 @@ function user_imageMarkerFunc($paramArray, $conf) {
 		$spage = $pObj->piVars[$pObj->config['singleViewPointerName']];
 		$astart = $imageNum * $spage;
 		$fileObjects = array_slice($fileObjects, $astart, $imageNum);
-		// $damRows = array_slice($damRows, $astart, $imageNum);
 		$imgsCaptions = array_slice($imgsCaptions, $astart, $imageNum);
 		$imgsAltTexts = array_slice($imgsAltTexts, $astart, $imageNum);
 		$imgsTitleTexts = array_slice($imgsTitleTexts, $astart, $imageNum);
@@ -115,7 +102,7 @@ function user_imageMarkerFunc($paramArray, $conf) {
 			break;
 		}
 		if ($val) {
-			$reference = array_merge(array_filter($val->getOriginalFile()->getProperties(), 'strval'), array_filter($val->getReferenceProperties(), 'strval'));
+			$reference = $val->getReferenceProperties();
 			//set Caption, Alt-text and Title Tag
 			switch ($mode) {
 				//take data form tt_news record
@@ -147,24 +134,6 @@ function user_imageMarkerFunc($paramArray, $conf) {
 					$lConf['image.']['altText'] = $reference['alternative'];
 					$lConf['image.']['titleText'] = $reference['title'];
 					$caption = $reference['description'];
-					break;
-				//take data from FAL fields and use tt_news as a fallback
-				case 3:
-					if ($reference['alternative']) {
-						$lConf['image.']['altText'] = $reference['alternative'];
-					} else {
-						$lConf['image.']['altText'] = $imgsAltTexts[$cc];
-					}
-					if ($reference['title']) {
-						$lConf['image.']['titleText'] = $reference['title'];
-					} else {
-						$lConf['image.']['titleText'] = $imgsTitleTexts[$cc];
-					}
-					if ($reference['description']) {
-						$caption = $reference['description'];
-					} else {
-						$caption = $imgsCaptions[$cc];
-					}
 					break;
 			}
 			$lConf['image.']['file'] = $val;
