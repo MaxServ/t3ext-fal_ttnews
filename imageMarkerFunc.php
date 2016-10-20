@@ -35,7 +35,8 @@ function user_imageMarkerFunc($paramArray, $conf) {
 
 	$markerArray = $paramArray[0];
 	$lConf = $paramArray[1];
-	$pObj = &$conf['parentObj']; // make a reference to the parent-object
+    // make a reference to the parent-object
+	$pObj = &$conf['parentObj'];
 	$row = $pObj->local_cObj->data;
 
 	$mode = (int)$GLOBALS['TSFE']->tmpl->setup['plugin.']['fal_ttnews.']['mode'];
@@ -48,7 +49,6 @@ function user_imageMarkerFunc($paramArray, $conf) {
 	$imgsAltTexts = explode(chr(10), $row['imagealttext']);
 	$imgsTitleTexts = explode(chr(10), $row['imagetitletext']);
 
-
 	// to get correct DAM files, set uid
 
 	// workspaces
@@ -59,18 +59,16 @@ function user_imageMarkerFunc($paramArray, $conf) {
 		// live workspace
 		$uid = $row['uid'];
 	}
+
 	// translations - i10n mode
 	if ($row['_LOCALIZED_UID']) {
 		//i10n mode = exclude   -> do nothing
 
 		//i10n mode = mergeIfNotBlank
 		$confArr_ttnews = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['tt_news']);
-		if (!$confArr_ttnews['l10n_mode_imageExclude']) {
-			if ($row['tx_damnews_dam_images']) {
-				$uid = $row['_LOCALIZED_UID'];
-			}
+		if (!$confArr_ttnews['l10n_mode_imageExclude'] && $row['tx_damnews_dam_images']) {
+            $uid = $row['_LOCALIZED_UID'];
 		}
-
 	}
 
 	$cc = 0;
@@ -82,7 +80,6 @@ function user_imageMarkerFunc($paramArray, $conf) {
 	// remove first img from the image array in single view if the TSvar firstImageIsPreview is set
 	if (((count($fileObjects) > 1 && $pObj->config['firstImageIsPreview']) || (count($fileObjects) >= 1 && $pObj->config['forceFirstImageIsPreview'])) && $pObj->theCode == 'SINGLE') {
 		array_shift($fileObjects);
-		// array_shift($damRows);
 		array_shift($imgsCaptions);
 		array_shift($imgsAltTexts);
 		array_shift($imgsTitleTexts);
@@ -131,10 +128,12 @@ function user_imageMarkerFunc($paramArray, $conf) {
 					break;
 				//take data from FAL fields
 				case 2:
-					$lConf['image.']['altText'] = $reference['alternative'];
-					$lConf['image.']['titleText'] = $reference['title'];
-					$caption = $reference['description'];
+                    $lConf['image.']['altText'] = $reference['alternative'] ? $reference['alternative'] : $val->getOriginalFile()->getProperty('alternative');
+                    $lConf['image.']['titleText'] = $reference['title'] ? $reference['title'] : $val->getOriginalFile()->getProperty('title');
+                    $caption = $reference['description'] ? $reference['description'] : $val->getOriginalFile()->getProperty('caption');
 					break;
+                default:
+                    break;
 			}
 			$lConf['image.']['file'] = $val;
 		}
