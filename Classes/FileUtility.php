@@ -20,7 +20,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class FileUtility implements \TYPO3\CMS\Core\SingletonInterface
 {
-
     /**
      * DisplayFileLinks
      *
@@ -85,7 +84,8 @@ class FileUtility implements \TYPO3\CMS\Core\SingletonInterface
     {
         $markerArray = $paramArray[0];
         $lConf = $paramArray[1];
-        $pObj = &$conf['parentObj']; // make a reference to the parent-object
+        // make a reference to the parent-object
+        $pObj = &$conf['parentObj'];
         $row = $pObj->local_cObj->data;
 
         $mode = (int)$GLOBALS['TSFE']->tmpl->setup['plugin.']['fal_ttnews.']['mode'];
@@ -114,12 +114,9 @@ class FileUtility implements \TYPO3\CMS\Core\SingletonInterface
 
             //i10n mode = mergeIfNotBlank
             $confArr_ttnews = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['tt_news']);
-            if (!$confArr_ttnews['l10n_mode_imageExclude']) {
-                if ($row['tx_damnews_dam_images']) {
-                    $uid = $row['_LOCALIZED_UID'];
-                }
+            if (!$confArr_ttnews['l10n_mode_imageExclude'] && $row['tx_damnews_dam_images']) {
+                $uid = $row['_LOCALIZED_UID'];
             }
-
         }
 
         $cc = 0;
@@ -131,7 +128,6 @@ class FileUtility implements \TYPO3\CMS\Core\SingletonInterface
         // remove first img from the image array in single view if the TSvar firstImageIsPreview is set
         if (((count($fileObjects) > 1 && $pObj->config['firstImageIsPreview']) || (count($fileObjects) >= 1 && $pObj->config['forceFirstImageIsPreview'])) && $pObj->theCode == 'SINGLE') {
             array_shift($fileObjects);
-            // array_shift($damRows);
             array_shift($imgsCaptions);
             array_shift($imgsAltTexts);
             array_shift($imgsTitleTexts);
@@ -146,6 +142,10 @@ class FileUtility implements \TYPO3\CMS\Core\SingletonInterface
             $imgsAltTexts = array_slice($imgsAltTexts, $astart, $imageNum);
             $imgsTitleTexts = array_slice($imgsTitleTexts, $astart, $imageNum);
         }
+
+        /**
+         * @var TYPO3\CMS\Core\Resource\FileReference $val
+         */
         while (list($key, $val) = each($fileObjects)) {
             if ($cc == $imageNum) {
                 break;
@@ -180,9 +180,9 @@ class FileUtility implements \TYPO3\CMS\Core\SingletonInterface
                         break;
                     //take data from FAL fields
                     case 2:
-                        $lConf['image.']['altText'] = $reference['alternative'];
-                        $lConf['image.']['titleText'] = $reference['title'];
-                        $caption = $reference['description'];
+                        $lConf['image.']['altText'] = $reference['alternative'] ? $reference['alternative'] : $val->getOriginalFile()->getProperty('alternative');
+                        $lConf['image.']['titleText'] = $reference['title'] ? $reference['title'] : $val->getOriginalFile()->getProperty('title');
+                        $caption = $reference['description'] ? $reference['description'] : $val->getOriginalFile()->getProperty('caption');
                         break;
                 }
                 $lConf['image.']['file'] = $val;
