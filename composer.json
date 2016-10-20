@@ -8,5 +8,10 @@
     "support": {
         "issues": "https://github.com/MaxServ/t3ext-fal_ttnews/issues"
     },
-    "version": "0.0.3"
+    "version": "0.0.3",
+    "autoload": {
+        "psr-4": {
+            "Maxserv\\FalTtnews\\": "Classes"
+        }
+    }
 }
