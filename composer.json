@@ -8,7 +8,10 @@
     "support": {
         "issues": "https://github.com/MaxServ/t3ext-fal_ttnews/issues"
     },
-    "version": "0.0.3",
+    "replace": {
+        "fal_ttnews": "self.version",
+        "typo3-ter/fal_ttnews": "self.version"
+    },
     "autoload": {
         "psr-4": {
             "Maxserv\\FalTtnews\\": "Classes"
