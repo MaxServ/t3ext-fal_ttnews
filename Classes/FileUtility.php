@@ -50,10 +50,20 @@ class FileUtility implements \TYPO3\CMS\Core\SingletonInterface
             // live workspace
             $uid = $row['uid'];
         }
-        // Check for translation ?
 
+        /**
+         * @var TYPO3\CMS\Core\Resource\FileRepository $fileRepository
+         */
         $fileRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\FileRepository');
-        $fileObjects = $fileRepository->findByRelation('tt_news', 'tx_falttnews_fal_media', $uid);
+        $fileObjects = array();
+
+        // translations - i10n mode
+        if ($row['_LOCALIZED_UID']) {
+            //i10n mode = mergeIfNotBlank
+            $fileObjects = $fileRepository->findByRelation('tt_news', 'tx_falttnews_fal_media', $row['_LOCALIZED_UID']);
+        }
+
+        $fileObjects = $fileObjects ? $fileObjects : $fileRepository->findByRelation('tt_news', 'tx_falttnews_fal_media', $uid);
 
         if (is_array($fileObjects)) {
             $files_stdWrap = GeneralUtility::trimExplode('|', $pObj->conf['newsFiles_stdWrap.']['wrap']);
