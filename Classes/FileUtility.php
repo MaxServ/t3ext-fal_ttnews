@@ -50,7 +50,11 @@ class FileUtility implements \TYPO3\CMS\Core\SingletonInterface
             // live workspace
             $uid = $row['uid'];
         }
-        // Check for translation ?
+
+        // Check for translation
+        if ($row['_LOCALIZED_UID']) {
+            $uid = $row['_LOCALIZED_UID'];
+        }
 
         $fileRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\FileRepository');
         $fileObjects = $fileRepository->findByRelation('tt_news', 'tx_falttnews_fal_media', $uid);
